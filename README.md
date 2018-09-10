@@ -6,5 +6,6 @@ To use, you'll need to install python3 and pip. For pip:
  
 Then, you'll need to install the following packages
 > sudo pip install requests
+
 > sudo pip install BeautifulSoup4
   
