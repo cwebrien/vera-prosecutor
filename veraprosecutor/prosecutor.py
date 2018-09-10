@@ -13,15 +13,13 @@ class Prosecutor:
 	def __init__(self,
 				 state,
 				 district,
-			     first_name,
-			     last_name):
+			     name):
 		
 		# Basics
-		self.state        = state
-		self.district     = district
-		self.first_name   = first_name
-		self.last_name    = last_name
-		self.as_of        = datetime.now()
+		self.state    = state
+		self.district = district
+		self.name     = name
+		self.as_of    = datetime.now()
 		
 		# Optional contact info
 		self.email        = ""
@@ -33,10 +31,15 @@ class Prosecutor:
 		self.party         = ""
 		self.terms_served  = float("nan")
 		
+		
 	def __str__(self):
 		return (self.state + " - " + self.district + ": " +
-				self.last_name + ", " + self.first_name +
-				" (" + str(self.as_of) + ")" )
+				self.name + " (" + str(self.as_of) + ")" )
+		
+	
+	def __repr__(self):
+		return self.__str__()
+		
 		
 if __name__ == '__main__':
 	print("Basic runner for prosecutor.py")
