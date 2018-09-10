@@ -6,6 +6,7 @@
 # On behalf of: Vera Institute of Justice
 #
 
+from datetime import datetime
 import warnings
 
 class Prosecutor:
@@ -20,6 +21,7 @@ class Prosecutor:
 		self.district     = district
 		self.first_name   = first_name
 		self.last_name    = last_name
+		self.as_of        = datetime.now()
 		
 		# Optional contact info
 		self.email        = ""
@@ -33,7 +35,8 @@ class Prosecutor:
 		
 	def __str__(self):
 		return (self.state + " - " + self.district + ": " +
-				self.last_name + ", " + self.first_name)
+				self.last_name + ", " + self.first_name +
+				" (" + str(self.as_of) + ")" )
 		
 if __name__ == '__main__':
 	print("Basic runner for prosecutor.py")
