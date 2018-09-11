@@ -57,7 +57,10 @@ def application(environ, start_response):
 		response = ''
 	else:
 		if path == "/":
-			response = "Try querying by state, e.g. /ma"
+			response = ("Try querying by state or USA (federal). Available endpoints:<p>" 
+			            + "<ul>"
+			            + "<li><a href='ma'>MA</a></li>"
+			            + "</ul>")
 		elif path == "/ma":
 			pf = ProsecutorFetcher("MA")
 			response = "Masschusetts Prosecutors<p>" + pretty_print_prosecutors(pf.get_district_prosecutors())
