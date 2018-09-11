@@ -6,13 +6,16 @@
 # On behalf of: Vera Institute of Justice
 #
 
-from prosecutor import Prosecutor
 
 import re
 from requests import get
 from requests.exceptions import RequestException
 from contextlib import closing
 from bs4 import BeautifulSoup
+
+
+from prosecutor import Prosecutor
+
 
 def simple_get(url):
 	"""
