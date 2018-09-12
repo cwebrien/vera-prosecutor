@@ -85,6 +85,8 @@ class ProsecutorFetcher:
 				self.__district_prosecutors = self.__get_us_district_prosecutors()
 			elif self.state == "MA":
 				self.__district_prosecutors = self.__get_ma_district_prosecutors()
+			elif self.state == "TX":
+				self.__district_prosecutors = self.__get_tx_district_prosecutors()
 			
 		return self.__district_prosecutors
 
@@ -93,7 +95,7 @@ class ProsecutorFetcher:
 ###
 	def __get_us_district_prosecutors(cls):
 		"""
-		District prosecutors fetcher -- Massachusetts
+		District prosecutors fetcher -- Federal / US
 		Returns a dictionary of district to prosecutor(s). 
 		"""
 		district_prosecutors = {}
@@ -162,6 +164,36 @@ class ProsecutorFetcher:
 				district_prosecutors.setdefault(district, []).append(prosecutor)
 		
 		return district_prosecutors
+		
+		
+###
+### Texas
+###
+	def __get_tx_district_prosecutors(cls):
+		"""
+		District prosecutors fetcher -- Texas
+		Returns a dictionary of district to prosecutor(s). 
+		"""
+		district_prosecutors = {}
+		
+		raw_html = simple_get("https://www.txdirectory.com/online/da/")
+		bs_html  = BeautifulSoup(raw_html, "html.parser")
+		
+		for attorney_row in bs_html.findAll("tr"):
+			col = attorney_row.findAll("td")
+			if len(col) > 2:
+				district = str(col[0].text)
+				name     = str(col[2].text).replace("The Honorable ", "").split(" (")[0]
+				if "(D)" in col[2].text:
+					party = "Democratic"
+				else:
+					party = "Republican"
+				prosecutor = Prosecutor("TX", district, name)
+				prosecutor.party = party
+				district_prosecutors.setdefault(district, []).append(prosecutor)
+		
+		return district_prosecutors
+		
 		
 		
 if __name__ == '__main__':

@@ -67,6 +67,7 @@ def application(environ, start_response):
 			            + "<ul>"
 			            + "<li><a href='US'>US (Federal)</a></li>"
 			            + "<li><a href='MA'>MA</a></li>"
+			            + "<li><a href='TX'>TX</a></li>"
 			            + "</ul>")
 		else:
 			state = path.replace("/", "").upper() # strip endpoint to the state

@@ -33,7 +33,10 @@ class Prosecutor:
 		
 		
 	def __str__(self):
-		return self.state + " - " + self.district + ": " + self.name
+		result = self.state + " - " + self.district + ": " + self.name
+		if self.party != "":
+			result += " (" + self.party + ")"
+		return result
 		
 	
 	def __repr__(self):
