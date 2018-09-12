@@ -69,7 +69,7 @@ def application(environ, start_response):
 			            + "<li><a href='MA'>MA</a></li>"
 			            + "</ul>")
 		else:
-			state = path.replace("/", "") # strip endpoint to the state
+			state = path.replace("/", "").upper() # strip endpoint to the state
 			pf = ProsecutorFetcher(state)
 			response = pretty_print_prosecutors(pf.get_district_prosecutors())
 			
