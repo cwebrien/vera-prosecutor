@@ -17,6 +17,10 @@ from bs4 import BeautifulSoup
 from prosecutor import Prosecutor
 
 
+###
+### Static methods for grabbing pages for scraping
+###
+
 def simple_get(url):
 	"""
 	Attempts to get the content at `url` by making an HTTP GET request.
@@ -54,7 +58,12 @@ def log_error(e):
 	print(e)
 
 
+
 class ProsecutorFetcher:
+	"""
+	ProsecutorFetcher provides mechanisms for pulling all of the lead prosecuting 
+	attorneys for a particular state (or at a federal level).
+	"""
 	def __init__(self,
 				 state):
 		"""
@@ -62,19 +71,7 @@ class ProsecutorFetcher:
 		It auto-initializes the districts within a state. Returns new ProsecutorFetcher.
 		"""
 		self.state                  = state
-		self.__district_pages       = None
 		self.__district_prosecutors = None
-		
-		
-	def get_district_pages(self):
-		"""
-		Given the state specified, pull the districts and their respective webpages.
-		Returns a dictionary of district to webpage. Caches results.
-		"""
-		if(self.__district_pages is None):
-			self.__district_pages = self.__get_ma_district_pages()
-			
-		return self.__district_pages
 	
 	
 	def get_district_prosecutors(self):
@@ -82,12 +79,42 @@ class ProsecutorFetcher:
 		Given the state specified, pull the districts and their respective prosecutor(s).
 		Returns a dictionary of district to prosecutors. Caches results.
 		"""
-		if(self.__district_prosecutors is None):
-			self.__district_prosecutors = self.__get_ma_district_prosecutors()
+		print('requesting for ' + self.state)
+		if self.__district_prosecutors is None:
+			if self.state == "US":
+				self.__district_prosecutors = self.__get_us_district_prosecutors()
+			elif self.state == "MA":
+				self.__district_prosecutors = self.__get_ma_district_prosecutors()
 			
 		return self.__district_prosecutors
+
+###
+### USA / Federal
+###
+	def __get_us_district_prosecutors(cls):
+		"""
+		District prosecutors fetcher -- Massachusetts
+		Returns a dictionary of district to prosecutor(s). 
+		"""
+		district_prosecutors = {}
 		
+		raw_html = simple_get("https://www.justice.gov/usao/us-attorneys-listing")
+		bs_html  = BeautifulSoup(raw_html, "html.parser")
+		
+		for attorney_row in bs_html.findAll("tr"):
+			col = attorney_row.findAll("td")
+			if len(col) == 2:
+				district = str(col[0].text)
+				name     = str(col[1]).replace(" *", "")
+				prosecutor = Prosecutor("US", district, name)
+				district_prosecutors.setdefault(district, []).append(prosecutor)
+		
+		return district_prosecutors
+
 	
+###
+### MASSACHUSETTS
+###
 	def __get_ma_district_pages(cls):
 		"""
 		District fetcher -- Massachusetts
@@ -122,7 +149,7 @@ class ProsecutorFetcher:
 		"""
 		district_prosecutors = {}
 		
-		for district, district_page in cls.get_district_pages().items():
+		for district, district_page in cls.__get_ma_district_pages().items():
 			raw_html = simple_get(district_page)
 			bs_html  = BeautifulSoup(raw_html, "html.parser")
 			

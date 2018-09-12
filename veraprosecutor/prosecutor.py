@@ -33,8 +33,7 @@ class Prosecutor:
 		
 		
 	def __str__(self):
-		return (self.state + " - " + self.district + ": " +
-				self.name + " (" + str(self.as_of) + ")" )
+		return self.state + " - " + self.district + ": " + self.name
 		
 	
 	def __repr__(self):

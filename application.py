@@ -6,6 +6,8 @@
 # On behalf of: Vera Institute of Justice
 #
 
+#TODO: Issue #10: Clean up this whole script.
+
 import logging
 import logging.handlers
 
@@ -32,6 +34,8 @@ handler.setFormatter(formatter)
 # add Handler to Logger
 logger.addHandler(handler)
 
+
+#TODO -- Issue #9: This will go away when we format things nicely for prosecutor listings
 def pretty_print_prosecutors(district_prosecutors):
 	result = "<ul>"
 	for district, prosecutor in district_prosecutors.items():
@@ -44,6 +48,8 @@ def application(environ, start_response):
 	path	= environ['PATH_INFO']
 	method	= environ['REQUEST_METHOD']
 	
+	#TODO -- Issue #8: Implement database update calls from POST or PUT endpoints
+	#        and tidy up this messy code whilst at it
 	if method == 'POST':
 		try:
 			if path == '/':
@@ -57,13 +63,16 @@ def application(environ, start_response):
 		response = ''
 	else:
 		if path == "/":
-			response = ("Try querying by state or USA (federal). Available endpoints:<p>" 
+			response = ("Try querying by state or US (federal). Available endpoints:<p>" 
 			            + "<ul>"
-			            + "<li><a href='ma'>MA</a></li>"
+			            + "<li><a href='US'>US (Federal)</a></li>"
+			            + "<li><a href='MA'>MA</a></li>"
 			            + "</ul>")
-		elif path == "/ma":
-			pf = ProsecutorFetcher("MA")
-			response = "Masschusetts Prosecutors<p>" + pretty_print_prosecutors(pf.get_district_prosecutors())
+		else:
+			state = path.replace("/", "") # strip endpoint to the state
+			pf = ProsecutorFetcher(state)
+			response = pretty_print_prosecutors(pf.get_district_prosecutors())
+			
 	status = '200 OK'
 	headers = [('Content-type', 'text/html')]
 
